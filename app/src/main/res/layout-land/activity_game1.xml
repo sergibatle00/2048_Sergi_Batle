@@ -13,7 +13,7 @@
         android:rowCount="4"
         android:columnCount="4"
         android:padding="8dp"
-        android:background="@drawable/background_rectangle">
+        android:background="@drawable/game1background_rectangle">
 
     <TextView
             android:id="@+id/tv_00"

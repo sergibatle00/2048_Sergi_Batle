@@ -8,12 +8,15 @@
 
     <Button
         android:id="@+id/game1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="2048"/>
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:text="2048"
+        android:textSize="25dp"
+        android:layout_marginBottom="40dp"/>
     <Button
         android:id="@+id/game2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="senku"/>
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:text="senku"
+        android:textSize="25dp" />
 </LinearLayout>

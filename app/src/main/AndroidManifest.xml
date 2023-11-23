@@ -15,11 +15,11 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
+
         </activity>
         <activity
             android:name=".Game1Activity"
             android:exported="true">
-
         </activity>
         <activity
             android:name=".Game2Activity"

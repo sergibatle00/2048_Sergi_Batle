@@ -34,8 +34,9 @@ public class Game2Activity extends AppCompatActivity {
                 {0, 0}, {0, 1}, {0, 5}, {0, 6},
                 {1, 0}, {1, 1}, {1, 5}, {1, 6},
                 {5, 0}, {5, 1}, {5, 5}, {5, 6},
-                {6, 0}, {6, 1}, {6, 5}, {6, 6}
+                {6, 0}, {6, 1}, {6, 5}, {6, 6},
         };
+
         for (int[] position : posiciones) {
             int fila = position[0];
             int columna = position[1];
@@ -104,7 +105,7 @@ public class Game2Activity extends AppCompatActivity {
             params.setMargins(3, 3, 3, 3);
             textView.setLayoutParams(params);
 
-            textView.setBackground(getResources().getDrawable(R.drawable.circle_unchecked));
+            textView.setBackground(getResources().getDrawable(R.drawable.circle_checked));
             textView.setTextSize(20);
             textView.setTextColor(Color.BLACK);
             textView.setText("");

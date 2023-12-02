@@ -34,7 +34,7 @@ public class Game1Activity extends AppCompatActivity implements View.OnTouchList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        generateLayout();
+        createLayout();
 
         gridLayout.setOnTouchListener(new View.OnTouchListener() {
             private float xStart, yStart, xEnd, yEnd;
@@ -59,11 +59,11 @@ public class Game1Activity extends AppCompatActivity implements View.OnTouchList
                             if (xEnd > xStart) {
                                 // Deslizamiento hacia la derecha
                                 Log.d("Swipe", "Right");
-                                updateArray("right");
+                                updateArrayRight();
                             } else {
                                 // Deslizamiento hacia la izquierda
                                 Log.d("Swipe", "Left");
-                                updateArray("left");
+                                updateArrayLeft();
                             }
                         }
                         // Detectar deslizamiento vertical
@@ -71,11 +71,11 @@ public class Game1Activity extends AppCompatActivity implements View.OnTouchList
                             if (yEnd > yStart) {
                                 // Deslizamiento hacia abajo
                                 Log.d("Swipe", "Down");
-                                updateArray("down");
+                                updateArrayDown();
                             } else {
                                 // Deslizamiento hacia arriba
                                 Log.d("Swipe", "Up");
-                                updateArray("up");
+                                updateArrayUp();
                             }
                         }
                         break;
@@ -109,25 +109,6 @@ public class Game1Activity extends AppCompatActivity implements View.OnTouchList
             }
             four--;
         }
-    }
-
-
-    private void updateArray(String action) {
-        switch (action) {
-            case "up":
-                updateArrayUp();
-                break;
-            case "down":
-                updateArrayDown();
-                break;
-            case "right":
-                updateArrayRight();
-                break;
-            case "left":
-                updateArrayLeft();
-                break;
-        }
-        visualizarArrayEnLogcat();
     }
 
 
@@ -259,7 +240,7 @@ public class Game1Activity extends AppCompatActivity implements View.OnTouchList
     }
 
 
-    private void generateLayout() {
+    private void createLayout() {
         startGame();
 
         mainLayout = new LinearLayout(this);
@@ -290,7 +271,6 @@ public class Game1Activity extends AppCompatActivity implements View.OnTouchList
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-
                 TextView textView = new TextView(this);
                 textView.setLayoutParams(new GridLayout.LayoutParams(
                         GridLayout.spec(GridLayout.UNDEFINED, 1f),

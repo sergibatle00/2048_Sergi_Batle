@@ -33,7 +33,6 @@ public class SettingsFragment extends AppCompatActivity {
         setContentView(R.layout.fragment_settings);
 
         reset = findViewById(R.id.resetScores);
-        senkuScore = findViewById(R.id.senkuScore);
         dosmilScore = findViewById(R.id.dosmilScore);
         senkuTimer =  findViewById(R.id.senkuTimer);
         apply =  findViewById(R.id.apply);
@@ -44,7 +43,6 @@ public class SettingsFragment extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("ajustes", Context.MODE_PRIVATE);
 
 
-        senkuScore.setText(sharedPreferences.getString("senkuScore", ""));
         dosmilScore.setText(sharedPreferences.getString("dosmilScore", ""));
         timer.setText(String.valueOf(sharedPreferences.getInt("timer", 0)));
         undo.setText(String.valueOf(sharedPreferences.getInt("undo", 0)));
@@ -55,7 +53,6 @@ public class SettingsFragment extends AppCompatActivity {
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                senkuScore.setText("0");
                 dosmilScore.setText("0");
             }
         });
@@ -69,7 +66,6 @@ public class SettingsFragment extends AppCompatActivity {
                 editor.putString("username", username.getText().toString());
                 editor.putString("timer", timer.getText().toString());
                 editor.putString("undo", undo.getText().toString());
-                editor.putString("senkuScore", senkuScore.getText().toString());
                 editor.putString("dosmilScore", dosmilScore.getText().toString());
 
                 editor.apply();

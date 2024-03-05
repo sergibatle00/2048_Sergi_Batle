@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -26,6 +27,7 @@ public class GameSenku extends AppCompatActivity {
 
     int[][] board = new int[9][9];
     int[][] lastMove = new int[9][9];
+    ArrayList<int[][]> moves = new ArrayList<>();
     TextView pieceSelected = null;
     TextView positionSelected = null;
     private TextView undoButton;
@@ -59,7 +61,7 @@ public class GameSenku extends AppCompatActivity {
         this.undo_tickets = extraData;
         Log.d("undo_tikets", String.valueOf(this.undo_tickets));
 
-        createTableGame();
+        createBaseBoard();
         startCountdownTimer();
 
         undoButton.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +87,10 @@ public class GameSenku extends AppCompatActivity {
     }
 
     private void undoLastMove() {
-        if (undo_tickets > 0) {
+        if (undo_tickets > 0 && moves.size() != 0) {
+            int[][] lastMove = moves.remove(moves.size() - 1);
+
+
             for (int row = 0; row < 9; row++) {
                 System.arraycopy(lastMove[row], 0, board[row], 0, 9);
             }
@@ -99,20 +104,30 @@ public class GameSenku extends AppCompatActivity {
 
 
     private void redrawBoard() {
+        // Eliminar todas las vistas del GridLayout
         gridLayout.removeAllViews();
-        createBaseBoard();
 
-        for (int row = 0; row < 9; row++) {
-            for (int column = 0; column < 9; column++) {
-                board[row][column] = lastMove[row][column];
-            }
-        }
-
+        // Volver a agregar las vistas de las piezas basadas en el estado actual del tablero
         for (int row = 0; row < 9; row++) {
             for (int column = 0; column < 9; column++) {
                 if (board[row][column] == 2) {
                     TextView textView = new TextView(new ContextThemeWrapper(this, R.style.pieceStyle));
                     textView.setBackgroundResource(R.drawable.piece_senku);
+                    addClickListenerToPiece(textView);
+                    GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        params.rowSpec = GridLayout.spec(row, 1f);
+                        params.columnSpec = GridLayout.spec(column, 1f);
+                        textView.setLayoutParams(params);
+                    }
+                    gridLayout.addView(textView);
+                    Position position = new Position(row, column, "piece");
+                    textView.setTag(position);
+                }
+
+                if (board[row][column] == 1) {
+                    TextView textView = new TextView(new ContextThemeWrapper(this, R.style.voidPieceStyle));
+                    textView.setBackgroundResource(R.drawable.void_senku_piece);
                     addClickListenerToPiece(textView);
                     GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -154,12 +169,13 @@ public class GameSenku extends AppCompatActivity {
     }
 
     private void saveLastMove() {
+        int[][] currentMove = new int[9][9];
+        // Copiar el estado actual del tablero al array currentMove
         for (int row = 0; row < 9; row++) {
-            for (int column = 0; column < 9; column++) {
-                lastMove[row][column] = board[row][column];
-            }
+            System.arraycopy(board[row], 0, currentMove[row], 0, 9);
         }
-        printLastMoveArray();
+        // Guardar el estado actual en moves
+        moves.add(currentMove);
     }
 
     private void printLastMoveArray() {
@@ -185,7 +201,7 @@ public class GameSenku extends AppCompatActivity {
         for (int row = 0; row < board.length; row++) {
             Arrays.fill(board[row], 0);
         }
-        createTableGame();
+        createBaseBoard();
     }
 
     private void restartTimer() {
@@ -238,8 +254,6 @@ public class GameSenku extends AppCompatActivity {
                 createPieces(4, 4);
                 break;
         }
-
-
     }
 
 
@@ -442,8 +456,6 @@ public class GameSenku extends AppCompatActivity {
 
     private void createTableGame() {
         createBaseBoard();
-
-
         System.out.println("Valor del array: " + Arrays.deepToString(board));
     }
 

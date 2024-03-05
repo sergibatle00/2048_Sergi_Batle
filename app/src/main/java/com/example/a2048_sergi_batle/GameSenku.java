@@ -85,14 +85,18 @@ public class GameSenku extends AppCompatActivity {
     }
 
     private void undoLastMove() {
-        if ((this.undo_tickets) > 0) {
+        if (undo_tickets > 0) {
+            for (int row = 0; row < 9; row++) {
+                System.arraycopy(lastMove[row], 0, board[row], 0, 9);
+            }
             redrawBoard();
-            this.undo_tickets--;
-            undotv.setText(String.valueOf(this.undo_tickets));
+            undo_tickets--;
+            undotv.setText(String.valueOf(undo_tickets));
         } else {
             makeUndoButtonInvisible();
         }
     }
+
 
     private void redrawBoard() {
         gridLayout.removeAllViews();
@@ -155,7 +159,20 @@ public class GameSenku extends AppCompatActivity {
                 lastMove[row][column] = board[row][column];
             }
         }
+        printLastMoveArray();
     }
+
+    private void printLastMoveArray() {
+        StringBuilder sb = new StringBuilder();
+        for (int row = 0; row < 9; row++) {
+            for (int column = 0; column < 9; column++) {
+                sb.append(lastMove[row][column]).append(" ");
+            }
+            sb.append("\n");
+        }
+        Log.d("LastMoveArray", sb.toString());
+    }
+
 
     public void startNewGame(View view) {
         makeUndoButtonInvisible();
@@ -494,6 +511,7 @@ public class GameSenku extends AppCompatActivity {
         builder.setMessage("You lost the game");
         builder.show();
     }
+
 
     private boolean checkIfPieceCanMove() {
         boolean canMove = false;

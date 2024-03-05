@@ -43,11 +43,13 @@ public class SettingsFragment extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("ajustes", Context.MODE_PRIVATE);
 
+
         senkuScore.setText(sharedPreferences.getString("senkuScore", ""));
         dosmilScore.setText(sharedPreferences.getString("dosmilScore", ""));
-        timer.setText(sharedPreferences.getString("timer", ""));
-        undo.setText(sharedPreferences.getString("undo", ""));
+        timer.setText(String.valueOf(sharedPreferences.getInt("timer", 0)));
+        undo.setText(String.valueOf(sharedPreferences.getInt("undo", 0)));
         username.setText(sharedPreferences.getString("username", ""));
+
 
 
         reset.setOnClickListener(new View.OnClickListener() {

@@ -32,11 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         title = findViewById(R.id.login);
         setTextViewColor(title,
                 getResources().getColor(R.color.buttonPurple),
-                getResources().getColor(R.color.buttonBlue),
-                getResources().getColor(R.color.green),
-                getResources().getColor(R.color.yellow),
-                getResources().getColor(R.color.orange),
-                getResources().getColor(R.color.red)
+                getResources().getColor(R.color.buttonBlue)
         );
 
 

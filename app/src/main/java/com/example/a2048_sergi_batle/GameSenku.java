@@ -258,13 +258,13 @@ public class GameSenku extends AppCompatActivity {
 
 
     private void board2() {
-        int[][] corners = { {1, 1}, {1, 7}, {7, 1}, {7, 7} };
-        for (int row = 0; row < 9; row++) {
-            for (int column = 0; column < 9; column++) {
+        int[][] corners = { {1, 1}, {1, 5}, {5, 1}, {5, 5} };
+        for (int row = 0; row < 7; row++) {
+            for (int column = 0; column < 7; column++) {
                 TextView textView;
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
 
-                if ((row < 2 || row > 6) && (column < 2 || column > 6)) {
+                if ((row < 2 || row > 4) && (column < 2 || column > 4)) {
                     textView = new TextView(new ContextThemeWrapper(this, R.style.invisiblePiece));
                     board[row][column] = 0;
                     Position position = new Position(row, column, "invisible");

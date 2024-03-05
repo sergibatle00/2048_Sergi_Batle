@@ -1,18 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">2048_SERGI</string>
-    <string name="high_score">PUNTUACIÓN ALTA</string>
-    <string name="score">PUNTAJE</string>
-    <string name="instructions">Deslice para mover. 2 + 2 = 4. Alcanza 2048.</string>
-    <string name="you_win">¡Te Ganas!</string>
-    <string name="game_over">¡Juego Terminado!</string>
-    <string name="go_on">Pulsa Para Continuar</string>
-    <string name="for_now">Por ahora</string>
-    <string name="endless">Modo \"Infinito\"</string>
+    <string name="app_name">Select a game</string>
+    <string name="title_2048">2048</string>
+    <string name="title_senku">Senku</string>
+    <string name="score">SCORE</string>
+    <string name="time">TIME</string>
+    <string name="best">BEST</string>
+    <string name="back">BACK</string>
+    <string name="newGame">NEW GAME</string>
+    <string name="copyrightText">Version 1.0.0\nCopyright © 2023 RiotGames\nAll Rights Reserved.</string>
 
-    <!-- Confirmation dialog -->
-    <string name="continue_game">Cancelar</string>
-    <string name="reset">Reajustar</string>
-    <string name="reset_dialog_title">¿Reajutar el juego?</string>
-    <string name="reset_dialog_message">¿Seguro que quieres a reajustar el juego?</string>
+    <string name="senkuTimer">60</string>
+    <string name="undoTickets">5</string>
+
+    <string name="senkuScore">125</string>
+    <string name="dosmilScore">270</string>
+
+    <string name="username">SergiBatle00</string>
+    <string name="pass">1234</string>
+    <string name="email">sergibatle00@gmail.com</string>
+    <string name="points">12</string>
+    <string name="undo">undo</string>
 </resources>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundBrown"
+    android:padding="5dp"
+    tools:context=".GameSenku">
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/title_senku"
+        android:textColor="@color/dark"
+        android:textSize="54dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/gridLayoutSenku"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.325" />
+
+    <LinearLayout
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="44dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/rounded_dark"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/gridLayoutSenku"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.819"
+        app:layout_constraintStart_toEndOf="@id/textView"
+
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time"
+            android:textColor="@color/backgroundBrown"
+            android:textSize="24dp" />
+
+        <TextView
+            android:id="@+id/timeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@color/backgroundBrown"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/newgame_button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/rounded_dark"
+        android:text="@string/newGame"
+        android:textColor="@color/backgroundBrown"
+        android:textSize="24dp"
+        android:padding="5dp"
+
+        app:layout_constraintBottom_toTopOf="@+id/gridLayoutSenku"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <GridLayout
+        android:id="@+id/gridLayoutSenku"
+        android:layout_width="match_parent"
+        android:layout_height="370dp"
+        android:background="@drawable/rounded_dark"
+        android:columnCount="9"
+        android:rowCount="9"
+        android:padding="10dp"
+        android:useDefaultMargins="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+
+
+    </GridLayout>
+
+
+    <Button
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:background="@drawable/rounded_dark"
+        android:text="@string/back"
+        android:textColor="@color/backgroundBrown"
+        android:textSize="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/undo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gridLayoutSenku"
+         />
+
+    <Button
+        android:id="@+id/undo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="116dp"
+        android:background="@drawable/rounded_dark"
+        android:text="@string/undo"
+        android:textColor="@color/backgroundBrown"
+        android:textSize="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/backButton"
+        app:layout_constraintTop_toBottomOf="@+id/gridLayoutSenku"
+        />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:textSize="20dp"
+        android:text="Undo tickets: "
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/backButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gridLayoutSenku"
+        app:layout_constraintVertical_bias="0.355" />
+
+    <TextView
+        android:id="@+id/undoTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/undoTickets"
+        android:textSize="20dp"
+        android:textColor="@color/black"
+
+        app:layout_constraintBottom_toTopOf="@id/backButton"
+        app:layout_constraintStart_toEndOf="@id/textView2"
+        app:layout_constraintTop_toBottomOf="@id/gridLayoutSenku"
+        app:layout_constraintVertical_bias="0.35" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

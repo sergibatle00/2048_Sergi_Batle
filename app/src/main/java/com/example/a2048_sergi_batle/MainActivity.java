@@ -32,14 +32,15 @@ public class MainActivity extends AppCompatActivity {
         appTitle = findViewById(R.id.tittleApp);
         verticalLayout = findViewById(R.id.vertical_layout);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("ajustes", Context.MODE_PRIVATE);
+        usernameText.setText(sharedPreferences.getString("username", ""));
+
         // Animación de fundido (fade)
         fadeIn(helloText);
         fadeIn(usernameText);
         fadeIn(appTitle);
         fadeIn(verticalLayout);
 
-        // Resto del código
-        SharedPreferences sharedPreferences = getSharedPreferences("ajustes", Context.MODE_PRIVATE);
 
         fab = findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);

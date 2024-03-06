@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.TypedArrayUtils;
 
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Path;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,7 +37,7 @@ public class GameSenku extends AppCompatActivity {
     private CountDownTimer timer;
 
     GridLayout gridLayout;
-    int mode, undo_tickets;
+    int mode, undo_tickets, time;
     TextView undotv;
 
     @Override
@@ -51,15 +53,16 @@ public class GameSenku extends AppCompatActivity {
 
 
         Intent intent = getIntent();
+        SharedPreferences sharedPreferences = getSharedPreferences("ajustes", Context.MODE_PRIVATE);
 
         int extraData = intent.getIntExtra("mode", 0);
 
         Log.d("mode", String.valueOf(extraData));
         this.mode = extraData;
-        extraData = intent.getIntExtra("undo", 0);
-
-        this.undo_tickets = extraData;
+        this.time = sharedPreferences.getInt("timer", 0);
+        this.undo_tickets = sharedPreferences.getInt("undo", 0);
         Log.d("undo_tikets", String.valueOf(this.undo_tickets));
+        undotv.setText(String.valueOf(undo_tickets));
 
         createBaseBoard();
         startCountdownTimer();
@@ -97,8 +100,9 @@ public class GameSenku extends AppCompatActivity {
             redrawBoard();
             undo_tickets--;
             undotv.setText(String.valueOf(undo_tickets));
-        } else {
-            makeUndoButtonInvisible();
+            if (undo_tickets == 0) {
+                makeUndoButtonInvisible();
+            }
         }
     }
 
@@ -106,6 +110,7 @@ public class GameSenku extends AppCompatActivity {
     private void redrawBoard() {
         // Eliminar todas las vistas del GridLayout
         gridLayout.removeAllViews();
+        Position position;
 
         // Volver a agregar las vistas de las piezas basadas en el estado actual del tablero
         for (int row = 0; row < 9; row++) {
@@ -121,28 +126,137 @@ public class GameSenku extends AppCompatActivity {
                         textView.setLayoutParams(params);
                     }
                     gridLayout.addView(textView);
-                    Position position = new Position(row, column, "piece");
+                    position = new Position(row, column, "piece");
                     textView.setTag(position);
                 }
 
                 if (board[row][column] == 1) {
-                    TextView textView = new TextView(new ContextThemeWrapper(this, R.style.voidPieceStyle));
+                    TextView textView = new TextView(new ContextThemeWrapper(this, R.style.pieceStyle));
                     textView.setBackgroundResource(R.drawable.void_senku_piece);
-                    addClickListenerToPiece(textView);
                     GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         params.rowSpec = GridLayout.spec(row, 1f);
                         params.columnSpec = GridLayout.spec(column, 1f);
                         textView.setLayoutParams(params);
                     }
+                    addClickListenerToVoid2(textView);
                     gridLayout.addView(textView);
-                    Position position = new Position(row, column, "piece");
+                    position = new Position(row, column, "void");
                     textView.setTag(position);
                 }
             }
         }
     }
 
+    private void addClickListenerToVoid2(View voidPiece) {
+        voidPiece.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (pieceSelected != null) {
+                    positionSelected = (TextView) view;
+
+                    if (checkIfPieceCanMove()) {
+                        pieceSelected.setBackgroundResource(R.drawable.piece_senku);
+                        //animacion
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            Path path = new Path();
+                            path.moveTo(pieceSelected.getX(), pieceSelected.getY());
+                            path.lineTo(view.getX(), view.getY());
+
+                            // Crear y ejecutar la animación
+                            ObjectAnimator animator = ObjectAnimator.ofFloat(pieceSelected, View.X, View.Y, path);
+                            animator.setDuration(200);
+                            animator.start();
+                        }
+                        Position piecePosition = (Position) pieceSelected.getTag();
+                        piecePosition.setRow(((Position) positionSelected.getTag()).getRow());
+                        piecePosition.setColumn(((Position) positionSelected.getTag()).getColumn());
+                        pieceSelected = null;
+                        if (checkWin()) {
+                            showWinDialog();
+                        } else if (checkGameOver()) {
+                            showGameOverDialog();
+                        }
+                        makeUndoButtonVisible();
+                    } else {
+                        System.out.println("No se puede mover");
+                    }
+                }
+                redrawBoard();
+            }
+        });
+    }
+
+
+    private boolean checkIfPieceCanMove() {
+        boolean canMove = false;
+
+        Position piecePosition = (Position) pieceSelected.getTag();
+        Position movePosition = (Position) positionSelected.getTag();
+
+        if (piecePosition.getRow() == movePosition.getRow()) {
+            if (piecePosition.getColumn() - movePosition.getColumn() == 2) {
+                if (board[piecePosition.getRow()][piecePosition.getColumn() - 1] == 2) {
+                    saveLastMove();
+                    deletePiece(new Position(piecePosition.getRow(), piecePosition.getColumn() - 1, "piece"));
+                    canMove = true;
+                }
+            } else if (movePosition.getColumn() - piecePosition.getColumn() == 2) {
+                if (board[piecePosition.getRow()][piecePosition.getColumn() + 1] == 2) {
+                    saveLastMove();
+                    deletePiece(new Position(piecePosition.getRow(), piecePosition.getColumn() + 1, "piece"));
+                    canMove = true;
+                }
+            }
+        } else if (piecePosition.getColumn() == movePosition.getColumn()) {
+            if (piecePosition.getRow() - movePosition.getRow() == 2) {
+                if (board[piecePosition.getRow() - 1][piecePosition.getColumn()] == 2) {
+                    saveLastMove();
+                    deletePiece(new Position(piecePosition.getRow() - 1, piecePosition.getColumn(), "piece"));
+                    canMove = true;
+                }
+            } else if (movePosition.getRow() - piecePosition.getRow() == 2) {
+                if (board[piecePosition.getRow() + 1][piecePosition.getColumn()] == 2) {
+                    saveLastMove();
+                    deletePiece(new Position(piecePosition.getRow() + 1, piecePosition.getColumn(), "piece"));
+                    canMove = true;
+                }
+            }
+        }
+
+        if (canMove) {
+            board[piecePosition.getRow()][piecePosition.getColumn()] = 1;
+            board[movePosition.getRow()][movePosition.getColumn()] = 2;
+        }
+
+        return canMove;
+    }
+
+
+    private void createPieces(int x, int y) {
+        for (int row = 0; row < 9; row++) {
+            for (int column = 0; column < 9; column++) {
+                TextView textView;
+                GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+
+                if (board[row][column] == 1 && (row != x || column != y)) {
+                    textView = new TextView(new ContextThemeWrapper(this, R.style.pieceStyle));
+                    textView.setBackgroundResource(R.drawable.piece_senku);
+                    addClickListenerToPiece(textView);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        params.rowSpec = GridLayout.spec(row, 1f);
+                        params.columnSpec = GridLayout.spec(column, 1f);
+                        textView.setLayoutParams(params);
+                    }
+                    gridLayout.addView(textView);
+                    board[row][column] = 2;
+                    Position position = new Position(row, column, "piece");
+                    textView.setTag(position);
+                }
+            }
+        }
+    }
 
     @Override
     protected void onDestroy() {
@@ -156,7 +270,6 @@ public class GameSenku extends AppCompatActivity {
     }
 
     private void startCountdownTimer() {
-        int time = Integer.parseInt(getResources().getString(R.string.senkuTimer));
         timer = new CountDownTimer(time * 1000, 1000) { // 60 segundos, actualizando cada segundo
             public void onTick(long millisUntilFinished) {
                 timeView.setText("" + (millisUntilFinished / 1000));
@@ -426,34 +539,6 @@ public class GameSenku extends AppCompatActivity {
     }
 
 
-
-    private void createPieces(int x, int y) {
-        for (int row = 0; row < 9; row++) {
-            for (int column = 0; column < 9; column++) {
-                TextView textView;
-                GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-
-                if (board[row][column] == 1 && (row != x || column != y)) {
-                    textView = new TextView(new ContextThemeWrapper(this, R.style.pieceStyle));
-                    textView.setBackgroundResource(R.drawable.piece_senku);
-                    addClickListenerToPiece(textView);
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        params.rowSpec = GridLayout.spec(row, 1f);
-                        params.columnSpec = GridLayout.spec(column, 1f);
-                        textView.setLayoutParams(params);
-                    }
-                    gridLayout.addView(textView);
-                    board[row][column] = 2;
-                    Position position = new Position(row, column, "piece");
-                    textView.setTag(position);
-                }
-            }
-        }
-    }
-
-
-
     private void createTableGame() {
         createBaseBoard();
         System.out.println("Valor del array: " + Arrays.deepToString(board));
@@ -517,6 +602,8 @@ public class GameSenku extends AppCompatActivity {
         });
     }
 
+
+
     public void showGameOverDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Game Over");
@@ -524,50 +611,6 @@ public class GameSenku extends AppCompatActivity {
         builder.show();
     }
 
-
-    private boolean checkIfPieceCanMove() {
-        boolean canMove = false;
-
-        Position piecePosition = (Position) pieceSelected.getTag();
-        Position movePosition = (Position) positionSelected.getTag();
-
-        if (piecePosition.getRow() == movePosition.getRow()) {
-            if (piecePosition.getColumn() - movePosition.getColumn() == 2) {
-                if (board[piecePosition.getRow()][piecePosition.getColumn() - 1] == 2) {
-                    saveLastMove();
-                    deletePiece(new Position(piecePosition.getRow(), piecePosition.getColumn() - 1, "piece"));
-                    canMove = true;
-                }
-            } else if (movePosition.getColumn() - piecePosition.getColumn() == 2) {
-                if (board[piecePosition.getRow()][piecePosition.getColumn() + 1] == 2) {
-                    saveLastMove();
-                    deletePiece(new Position(piecePosition.getRow(), piecePosition.getColumn() + 1, "piece"));
-                    canMove = true;
-                }
-            }
-        } else if (piecePosition.getColumn() == movePosition.getColumn()) {
-            if (piecePosition.getRow() - movePosition.getRow() == 2) {
-                if (board[piecePosition.getRow() - 1][piecePosition.getColumn()] == 2) {
-                    saveLastMove();
-                    deletePiece(new Position(piecePosition.getRow() - 1, piecePosition.getColumn(), "piece"));
-                    canMove = true;
-                }
-            } else if (movePosition.getRow() - piecePosition.getRow() == 2) {
-                if (board[piecePosition.getRow() + 1][piecePosition.getColumn()] == 2) {
-                    saveLastMove();
-                    deletePiece(new Position(piecePosition.getRow() + 1, piecePosition.getColumn(), "piece"));
-                    canMove = true;
-                }
-            }
-        }
-
-        if (canMove) {
-            board[piecePosition.getRow()][piecePosition.getColumn()] = 1;
-            board[movePosition.getRow()][movePosition.getColumn()] = 2;
-        }
-
-        return canMove;
-    }
 
     private void deletePiece(Position position) {
         board[position.getRow()][position.getColumn()] = 1;

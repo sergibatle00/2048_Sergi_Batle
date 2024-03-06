@@ -62,7 +62,6 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString("pass", passTrue);
                     editor.putInt("timer", Integer.parseInt(getResources().getString(R.string.senkuTimer)));
                     editor.putInt("undo", Integer.parseInt(getResources().getString(R.string.undoTickets)));
-                    editor.putString("senkuScore", getResources().getString(R.string.senkuScore));
                     editor.putString("dosmilScore", getResources().getString(R.string.dosmilScore));
 
                     editor.apply();

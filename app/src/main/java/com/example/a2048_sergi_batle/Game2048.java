@@ -1,6 +1,8 @@
 package com.example.a2048_sergi_batle;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,8 +42,10 @@ public class Game2048 extends AppCompatActivity {
 
     private GridLayout gridLayout;
 
-    private TextView score;
+    private TextView score, best;
     private int rows, columns;
+
+    private SharedPreferences sharedPreferences;
 
 
     @Override
@@ -51,6 +55,9 @@ public class Game2048 extends AppCompatActivity {
 
         gridLayout = findViewById(R.id.gridLayout2048);
         score = findViewById(R.id.score);
+        best = findViewById(R.id.best);
+        sharedPreferences = getSharedPreferences("ajustes", Context.MODE_PRIVATE);
+        best.setText(sharedPreferences.getString("dosmilScore", ""));
 
         rows = gridLayout.getRowCount();
         columns = gridLayout.getColumnCount();
@@ -356,6 +363,22 @@ public class Game2048 extends AppCompatActivity {
 
     private void assingColorToPiece(TextView piece, String text) {
         piece.setBackgroundResource(colorsOfCells.get(text));
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        int actualScore = Integer.parseInt(score.getText().toString());
+        int bestScore = Integer.parseInt(best.getText().toString());
+
+        if (actualScore > bestScore) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("dosmilScore", String.valueOf(actualScore));
+
+            editor.apply();
+        }
+
+        super.onDestroy();
     }
 
 

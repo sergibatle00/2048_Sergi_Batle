@@ -484,7 +484,7 @@ public class GameSenku extends AppCompatActivity {
 
 
     private void board3() {
-        for (int row = 0; row < 9; row++) {
+        for (int row = 1; row < 9; row++) {
             for (int column = 0; column < 9; column++) {
                 TextView textView;
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();

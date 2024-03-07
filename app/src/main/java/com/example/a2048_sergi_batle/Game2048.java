@@ -136,13 +136,14 @@ public class Game2048 extends AppCompatActivity {
             if(random < percentage2){
                 board[randomRow][randomCol] = 2;
             } else {
-                board[randomRow][randomCol] = 4;
+                board[randomRow][randomCol] = 2048;
             }
         }
         updateBoard();
     }
 
     private void updateBoard() {
+        checkWin();
         checkGameOver();
 
         for(int i = 0; i < rows; i++){
@@ -316,6 +317,27 @@ public class Game2048 extends AppCompatActivity {
             }
         }
     }
+
+
+    private void checkWin() {
+        boolean win = false;
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                if(board[i][j] == 2048){
+                    win = true;
+                    break;
+                }
+            }
+        }
+
+        if(win){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Congratulations");
+            builder.setMessage("You've won");
+            builder.show();
+        }
+    }
+
 
     private void checkGameOver() {
         boolean isGameOver = true;

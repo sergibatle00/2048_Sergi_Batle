@@ -10,12 +10,14 @@ import android.view.ContextThemeWrapper;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,10 +37,14 @@ public class Game2048 extends AppCompatActivity {
         put("2048", R.drawable.cell2048);
     }};
 
+    int[][] lastMove = new int[4][4];
+
     private GestureDetector gestureDetector;
     double percentage2 = 0.6;
 
     int[][] board = new int[4][4];
+
+    private int lastScore;
 
     private GridLayout gridLayout;
 
@@ -46,6 +52,7 @@ public class Game2048 extends AppCompatActivity {
     private int rows, columns;
 
     private SharedPreferences sharedPreferences;
+    Button undo;
 
 
     @Override
@@ -80,6 +87,21 @@ public class Game2048 extends AppCompatActivity {
                 createInitCells();
             }
         });
+
+        findViewById(R.id.undo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                undoLastMove();
+            }
+        });
+
+        findViewById(R.id.newgame_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetBoard();
+            }
+        });
+
 
         gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
             private static final int SWIPE_THRESHOLD = 100;
@@ -117,6 +139,15 @@ public class Game2048 extends AppCompatActivity {
         });
     }
 
+    private void resetBoard() {
+        gridLayout.removeAllViews();
+        for (int row = 0; row < board.length; row++) {
+            Arrays.fill(board[row], 0);
+        }
+        createTableGame();
+        createInitCells();
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
@@ -136,7 +167,7 @@ public class Game2048 extends AppCompatActivity {
             if(random < percentage2){
                 board[randomRow][randomCol] = 2;
             } else {
-                board[randomRow][randomCol] = 2048;
+                board[randomRow][randomCol] = 4;
             }
         }
         updateBoard();
@@ -165,12 +196,52 @@ public class Game2048 extends AppCompatActivity {
         generateNewPiece();
     }
 
+    private void saveLastScore() {
+        lastScore = Integer.parseInt(score.getText().toString());
+    }
+
+    private void saveLastMove() {
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                lastMove[i][j] = board[i][j];
+            }
+        }
+    }
+
+    private void undoLastMove() {
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                board[i][j] = lastMove[i][j];
+            }
+        }
+        score.setText(String.valueOf(lastScore));
+        redrawBoard();
+    }
+
     private void backToTitle() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
+    private void redrawBoard() {
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                TextView cell = (TextView) gridLayout.getChildAt(i * columns + j);
+                if(board[i][j] != 0){
+                    cell.setText(String.valueOf(board[i][j]));
+                    cell.setTextAppearance(this, R.style.pieceCells2048);
+                    assingColorToPiece(cell, String.valueOf(board[i][j]));
+                } else {
+                    cell.setText("");
+                    cell.setTextAppearance(this, R.style.voidCells2048);
+                    cell.setBackgroundResource(R.drawable.rounded_border_cell2048);
+                }
+            }
+        }
+    }
+
     private void createTableGame() {
+        score.setText("0");
         for (int i = 0; i < rows; i++) {
             for(int j = 0; j < columns; j++){
                 TextView voidCell = new TextView(new ContextThemeWrapper(this, R.style.voidCells2048));
@@ -187,6 +258,7 @@ public class Game2048 extends AppCompatActivity {
     }
 
     private void moveUp(){
+        saveLastMove();
         for(int i = 1; i < rows; i++){
             for(int j = 0; j < columns; j++){
                 if(board[i][j] != 0){
@@ -214,6 +286,7 @@ public class Game2048 extends AppCompatActivity {
     }
 
     private void moveDown(){
+        saveLastMove();
         for(int i = rows - 2; i >= 0; i--){
             for(int j = 0; j < columns; j++){
                 if(board[i][j] != 0){
@@ -241,6 +314,7 @@ public class Game2048 extends AppCompatActivity {
     }
 
     private void moveLeft(){
+        saveLastMove();
         for(int i = 0; i < rows; i++){
             for(int j = 1; j < columns; j++){
                 if(board[i][j] != 0){
@@ -266,6 +340,7 @@ public class Game2048 extends AppCompatActivity {
     }
 
     private void moveRight(){
+        saveLastMove();
         for(int i = 0; i < rows; i++){
             for(int j = columns - 2; j >= 0; j--){
                 if(board[i][j] != 0){
